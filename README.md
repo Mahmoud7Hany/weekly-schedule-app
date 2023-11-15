@@ -1,16 +1,4 @@
-# weekly_schedule
+# Weekly Schedule
 
-A new Flutter project.
+The Weekly Schedule App allows you to set weekly challenges and add personalized tasks for each day of the week. Easily create and track your goals, making it simple to organize your week. You can also add a weekly rating based on your achievements and reflect on what you've learned throughout the week. Stay organized, accomplish your tasks, and enhance your productivity with the Weekly Schedule App
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
