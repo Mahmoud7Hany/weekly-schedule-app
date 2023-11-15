@@ -1,14 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
-// السبت
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../models/model_task.dart';
 import '../../widgets/counter.dart';
+import '../../widgets/show_case_widget.dart';
 import '../../widgets/text_field_add.dart';
 import '../../widgets/todo-card.dart';
 
+// السبت
 class Saturday extends StatefulWidget {
   const Saturday({Key? key}) : super(key: key);
 
@@ -52,19 +54,22 @@ class _SaturdayState extends State<Saturday> {
     final newTaskTitle = myController.text;
     if (newTaskTitle.isNotEmpty) {
       setState(() {
-        allTasks.add(Task(title: newTaskTitle, status: false));
+        allTasks.insert(0, Task(title: newTaskTitle, status: false));
         myController.clear();
-        saveList(); // قم بحفظ القائمة هنا
+        saveList(); // حفظ القائمة هنا
+        allTasks.sort((a, b) => a.status ? -1 : 1); // فرز القائمة هنا
       });
     }
   }
 
+// حذف العنصر من القائمة
   void removeItem(int index) {
     if (allTasks.isNotEmpty) {
       setState(() {
         allTasks.removeAt(index); // حذف العنصر من القائمة
         saveList(); // حفظ القائمة الجديدة في SharedPreferences
-        myController.clear(); // لمسح الحقل بعد الحذف
+        myController.clear(); // مسح الحقل بعد الحذف
+        allTasks.sort((a, b) => a.status ? -1 : 1); // فرز القائمة هنا
       });
     }
   }
@@ -145,11 +150,11 @@ class _SaturdayState extends State<Saturday> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadList();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   loadList();
+  // }
 
   // هذا يقدم للمستخدم إمكانية نسخ القائمة الحالية إلى الحافظة عند الضغط على زر نسخ
   void copyListToClipboard() {
@@ -169,6 +174,58 @@ class _SaturdayState extends State<Saturday> {
     }
   }
 
+  //  لاضافه الشرح للعناصر ويظهر مره وحده فقط عند فتح التطبيق
+  final GlobalKey _deleteKey = GlobalKey();
+  final GlobalKey _copyKey = GlobalKey();
+
+  //  لحفظ القيمه لعرض اول مره
+  String keyBool = 'oneKey';
+
+  // بيستخدم عند فتح التطبيق اول مره بيتم حفظ الشرح ويعرضه اول مره فقط عند فتح لتطبيق
+  @override
+  void initState() {
+    // لاسترجاع القائيمه
+    loadList();
+    // لعرض رساله تظهر مره وحده فقط
+    _checkFirstTime();
+
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // SharedPreferences استرجاع قيمة showCaseOpened من
+      SharedPreferences.getInstance().then((prefs) {
+        bool opened = prefs.getBool(keyBool) ?? false;
+
+        if (!opened) {
+          // إذا لم يكن قد تم فتح الشرح بعد، قم بعرضه
+          ShowCaseWidget.of(context).startShowCase([_deleteKey, _copyKey]);
+
+          // true قم بتعيين showCaseOpened إلى
+          prefs.setBool(keyBool, true);
+        }
+      });
+    });
+  }
+
+  // لعرض رساله تظهر اول مره المستخدم يفتح فيها الصفحه فقط
+  late bool showCard = false; // تحديد ما إذا كان يجب عرض البطاقة أم لا
+  String key = 'first_time12';
+
+  _checkFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool(key) ?? true;
+
+    if (isFirstTime) {
+      setState(() {
+        showCard = true;
+        prefs.setBool(key, false);
+      });
+    } else {
+      setState(() {
+        showCard = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     allTasks.sort((a, b) => a.status ? -1 : 1);
@@ -179,24 +236,36 @@ class _SaturdayState extends State<Saturday> {
         elevation: 0,
         backgroundColor: const Color.fromRGBO(58, 66, 86, 1),
         actions: [
-          IconButton(
-            onPressed: () {
-              deleteAll();
-            },
-            icon: const Icon(
-              Icons.delete_forever,
-              size: 35,
-              color: Color.fromARGB(255, 255, 200, 196),
+          ShowCaseView(
+            globalKey: _deleteKey,
+            title: 'حذف',
+            description: 'عند الضغط على الزر، يتم حذف جميع المهام',
+            onFinish: () {},
+            child: IconButton(
+              onPressed: () {
+                deleteAll();
+              },
+              icon: const Icon(
+                Icons.delete_forever,
+                size: 35,
+                color: Color.fromARGB(255, 255, 200, 196),
+              ),
             ),
           ),
-          IconButton(
-            onPressed: () {
-              copyListToClipboard();
-            },
-            icon: const Icon(
-              Icons.copy,
-              size: 30,
-              color: Color.fromARGB(255, 255, 200, 196),
+          ShowCaseView(
+            globalKey: _copyKey,
+            title: 'نسخ',
+            description: 'يستطيع نسخ جميع المهام الموجودة',
+            onFinish: () {},
+            child: IconButton(
+              onPressed: () {
+                copyListToClipboard();
+              },
+              icon: const Icon(
+                Icons.copy,
+                size: 30,
+                color: Color.fromARGB(255, 255, 200, 196),
+              ),
             ),
           ),
         ],
@@ -205,36 +274,41 @@ class _SaturdayState extends State<Saturday> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // لعرض رساله تظهر مره وحده فقط عند فتح التطبيق اول مره
+          // true، اذا كانت بتساوي showCard قم بعرض البطاقه
+          if (showCard) buildCard(),
           if (allTasks.isNotEmpty)
             Counter(
               allTodos: allTasks.length,
               allCompleted: calculateCompletedTasks(),
             ),
           Expanded(
-              child: Container(
-                  color: const Color.fromARGB(255, 55, 63, 82),
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: allTasks.isNotEmpty
-                        ? allTasks.length
-                        : 1, // تحقق من عدم فراغ القائمة
-                    itemBuilder: (BuildContext context, int index) {
-                      if (allTasks.isNotEmpty) {
-                        return TodoCard(
-                          varTitle: allTasks[index].title,
-                          doneORnot: allTasks[index].status,
-                          changeStatus: changeStatus,
-                          index: index,
-                          delete: removeItem,
-                        );
-                      } else {
-                        return const Center(
-                          child: Text(
-                              'لا توجد مهام حتى الآن'), // عندما تكون القائمة فارغة
-                        );
-                      }
-                    },
-                  ))),
+            child: Container(
+              color: const Color.fromARGB(255, 55, 63, 82),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: allTasks.isNotEmpty
+                    ? allTasks.length
+                    : 1, // تحقق من عدم فراغ القائمة
+                itemBuilder: (BuildContext context, int index) {
+                  if (allTasks.isNotEmpty) {
+                    return TodoCard(
+                      varTitle: allTasks[index].title,
+                      doneORnot: allTasks[index].status,
+                      changeStatus: changeStatus,
+                      index: index,
+                      delete: removeItem,
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                          'لا توجد مهام حتى الآن'), // عندما تكون القائمة فارغة
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -287,6 +361,34 @@ class _SaturdayState extends State<Saturday> {
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  // لعرض رساله تظهر مره وحده فقط عند فتح التطبيق اول مره
+  Widget buildCard() {
+    return const Column(
+      children: [
+        Card(
+          elevation: 5,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'ملحوظة: هذا الحقل يظهر مرة واحدة فقط',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+        Card(
+          elevation: 5,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'عندما ترغب في مسح عنصر واحد من القائمة، يمكنك سحب العنصر المراد حذفه إلى اليمين. سيظهر زر الحذف وستتمكن من حذفه.',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

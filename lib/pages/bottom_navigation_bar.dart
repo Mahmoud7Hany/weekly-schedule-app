@@ -10,6 +10,7 @@ import 'evaluation_week.dart';
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
 
+
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
@@ -18,7 +19,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 1;
   final List<Widget> _pages = [
     const WeeklyChallenge(),
-    Home(),
+     Home(),
     const EvaluationWeek(),
   ];
 

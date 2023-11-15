@@ -47,14 +47,15 @@ class _FridayState extends State<Friday> {
     return completedTasks;
   }
 
-  // Widget لإضافة مهمة جديدة
+// Widget لإضافة مهمة جديدة
   addNewTask() {
     final newTaskTitle = myController.text;
     if (newTaskTitle.isNotEmpty) {
       setState(() {
-        allTasks.add(Task(title: newTaskTitle, status: false));
+        allTasks.insert(0, Task(title: newTaskTitle, status: false));
         myController.clear();
-        saveList(); // قم بحفظ القائمة هنا
+        saveList(); // حفظ القائمة هنا
+        allTasks.sort((a, b) => a.status ? -1 : 1); // فرز القائمة هنا
       });
     }
   }
@@ -65,7 +66,8 @@ class _FridayState extends State<Friday> {
       setState(() {
         allTasks.removeAt(index); // حذف العنصر من القائمة
         saveList(); // حفظ القائمة الجديدة في SharedPreferences
-        myController.clear(); // لمسح الحقل بعد الحذف
+        myController.clear(); // مسح الحقل بعد الحذف
+        allTasks.sort((a, b) => a.status ? -1 : 1); // فرز القائمة هنا
       });
     }
   }
@@ -211,30 +213,32 @@ class _FridayState extends State<Friday> {
               allCompleted: calculateCompletedTasks(),
             ),
           Expanded(
-              child: Container(
-                  color: const Color.fromARGB(255, 55, 63, 82),
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: allTasks.isNotEmpty
-                        ? allTasks.length
-                        : 1, // تحقق من عدم فراغ القائمة
-                    itemBuilder: (BuildContext context, int index) {
-                      if (allTasks.isNotEmpty) {
-                        return TodoCard(
-                          varTitle: allTasks[index].title,
-                          doneORnot: allTasks[index].status,
-                          changeStatus: changeStatus,
-                          index: index,
-                          delete: removeItem,
-                        );
-                      } else {
-                        return const Center(
-                          child: Text(
-                              'لا توجد مهام حتى الآن'), // عندما تكون القائمة فارغة
-                        );
-                      }
-                    },
-                  ))),
+            child: Container(
+              color: const Color.fromARGB(255, 55, 63, 82),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: allTasks.isNotEmpty
+                    ? allTasks.length
+                    : 1, // تحقق من عدم فراغ القائمة
+                itemBuilder: (BuildContext context, int index) {
+                  if (allTasks.isNotEmpty) {
+                    return TodoCard(
+                      varTitle: allTasks[index].title,
+                      doneORnot: allTasks[index].status,
+                      changeStatus: changeStatus,
+                      index: index,
+                      delete: removeItem,
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                          'لا توجد مهام حتى الآن'), // عندما تكون القائمة فارغة
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

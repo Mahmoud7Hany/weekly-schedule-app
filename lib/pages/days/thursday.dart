@@ -52,19 +52,22 @@ class _ThursdayState extends State<Thursday> {
     final newTaskTitle = myController.text;
     if (newTaskTitle.isNotEmpty) {
       setState(() {
-        allTasks.add(Task(title: newTaskTitle, status: false));
+        allTasks.insert(0, Task(title: newTaskTitle, status: false));
         myController.clear();
-        saveList(); // قم بحفظ القائمة هنا
+        saveList(); // حفظ القائمة هنا
+        allTasks.sort((a, b) => a.status ? -1 : 1); // فرز القائمة هنا
       });
     }
   }
 
+// حذف العنصر من القائمة
   void removeItem(int index) {
     if (allTasks.isNotEmpty) {
       setState(() {
         allTasks.removeAt(index); // حذف العنصر من القائمة
         saveList(); // حفظ القائمة الجديدة في SharedPreferences
-        myController.clear(); // لمسح الحقل بعد الحذف
+        myController.clear(); // مسح الحقل بعد الحذف
+        allTasks.sort((a, b) => a.status ? -1 : 1); // فرز القائمة هنا
       });
     }
   }

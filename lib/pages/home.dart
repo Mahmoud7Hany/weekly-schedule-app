@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:weekly_schedule/pages/days/monday.dart';
 import 'package:weekly_schedule/pages/days/saturday.dart';
 import 'package:weekly_schedule/pages/days/sunday.dart';
@@ -71,7 +72,11 @@ class Home extends StatelessWidget {
       case 'السبت':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Saturday()),
+          MaterialPageRoute(
+            builder: (context) => ShowCaseWidget(
+              builder: Builder(builder: (context) => const Saturday()),
+            ),
+          ),
         );
         break;
       case 'الأحد':

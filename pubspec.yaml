@@ -14,11 +14,12 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.2.2 # Save data
+  flutter_slidable: ^3.0.1 # قابل للانزلاق
+  showcaseview: ^2.0.3 # هو مكتبة تسمح للمطورين بإظهار نقاط تعريف للمستخدمين في التطبيق الخاص بهم
 
         #  شاشة البداية
   flutter_native_splash: ^2.2.14
   intl: any
-  sqflite: ^2.2.8+2
 flutter_native_splash:
   color: "#ffffff"
   # image: "assets/images/app/"

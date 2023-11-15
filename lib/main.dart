@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:weekly_schedule/pages/bottom_navigation_bar.dart';
 
 void main() {
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: const BottomNavigation(),
+      // home: const MyHomePage(),
+      home: ShowCaseWidget(
+        builder: Builder(builder: (context) => const BottomNavigation()),
+      ),
     );
   }
 }
