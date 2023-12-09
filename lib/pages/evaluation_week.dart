@@ -145,13 +145,13 @@ class _WeekRatingPageState extends State<EvaluationWeek> {
                   ),
                   child: const Row(
                     children: [
-                      Icon(Icons.delete, color: Colors.red), // لون الأيقونة
-                      SizedBox(width: 8), // المسافة بين الأيقونة والنص
+                      Icon(Icons.delete, color: Colors.red),
+                      SizedBox(width: 8),
                       Text(
-                        'حذف النص',
+                        'إزالة جميع التقييمات',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.red, // لون النص
+                          color: Colors.red,
                         ),
                       ),
                     ],
@@ -160,14 +160,17 @@ class _WeekRatingPageState extends State<EvaluationWeek> {
               ],
             ),
           const SizedBox(width: 10),
-          IconButton(
-            onPressed: copyListToClipboard,
-            icon: const Icon(
-              Icons.copy,
-              size: 30,
-              color: Color.fromARGB(255, 255, 200, 196),
+          if ((enteredTextPositive ?? '').isNotEmpty ||
+              (enteredTextNegative ?? '').isNotEmpty ||
+              (enteredTextLearning ?? '').isNotEmpty)
+            IconButton(
+              onPressed: copyListToClipboard,
+              icon: const Icon(
+                Icons.copy,
+                size: 30,
+                color: Color.fromARGB(255, 255, 200, 196),
+              ),
             ),
-          ),
         ],
       ),
       body: Padding(

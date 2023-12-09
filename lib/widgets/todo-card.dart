@@ -19,7 +19,6 @@ class TodoCard extends StatelessWidget {
   final Function changeStatus;
   final int index;
   final Function delete;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class TodoCard extends StatelessWidget {
       child: ListTile(
         title: GestureDetector(
           onTap: () {
-            changeStatus(index);
+            // changeStatus(index);
           },
           child: Container(
             padding: const EdgeInsets.all(15),
@@ -79,26 +78,16 @@ class TodoCard extends StatelessWidget {
                         changeStatus(index);
                       },
                     ),
-                    // const SizedBox(width: 5),
-                    // IconButton(
-                    //   onPressed: () {
-                    //     _showDeleteConfirmationDialog(context, index);
-                    //   },
-                    //   icon: const Icon(
-                    //     Icons.delete,
-                    //     color: Color.fromARGB(255, 255, 200, 196),
-                    //     size: 27,
-                    //   ),
-                    // ),
                   ],
                 )
               ],
             ),
           ),
         ),
-        onLongPress: () {
-          delete(index);
-        },
+        //  الضغط لفترة طويلة
+        // onLongPress: () {
+        //   delete(index);
+        // },
       ),
     );
   }

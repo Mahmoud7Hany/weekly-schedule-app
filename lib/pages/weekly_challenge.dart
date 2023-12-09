@@ -389,7 +389,7 @@ class _TextState extends State<WeeklyChallenge> {
               Icon(Icons.delete, color: Colors.red), // لون الأيقونة
               SizedBox(width: 8), // المسافة بين الأيقونة والنص
               Text(
-                'حذف النص',
+                'إزالة جميع التحديات',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.red, // لون النص
